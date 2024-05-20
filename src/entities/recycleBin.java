@@ -6,26 +6,36 @@ import java.awt.Image;
 public class recycleBin {
     String color;
     Image trashImage;
-
+    String name;
+    int locationX;
+    String Type;
 
     public recycleBin(String color){
         TypeOfTrash(color);
+
     }
     
     private void TypeOfTrash(String type) {
+        name = type;
 
         switch (type) {
-            case "vidro":
-                trashImage = new ImageAsset("../assets/lixo-amarelo.png").getImage();
-                break;
-            case "plastico":
+            case "Plastico":
                 trashImage = new ImageAsset("../assets/lixo-laranja.png").getImage();
                 break;
-            case "papel":
-            trashImage = new ImageAsset("../assets/lixo-verde.png").getImage();
+            case "Metal":
+                trashImage = new ImageAsset("../assets/lixo-amarelo.png").getImage();
                 break;
-            case "organico":
-            trashImage = new ImageAsset("../assets/lixo-vermelho.png").getImage();
+            case "Vidro":
+                trashImage = new ImageAsset("../assets/lixo-verde.png").getImage();
+                break;
+            case "Eletronico":
+                trashImage = new ImageAsset("../assets/lixo-vermelho.png").getImage();
+                break;
+            case "Organico":
+                trashImage = new ImageAsset("../assets/lixo-vermelho.png").getImage();
+                break;
+            case "Papel":
+                trashImage = new ImageAsset("../assets/lixo-vermelho.png").getImage();
                 break;
         
             default:
@@ -34,7 +44,27 @@ public class recycleBin {
 
     }
 
+    public boolean handleReceiveTrash(String type){
+
+        if(type == name){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+    public void setLocationX(int locationX){
+        this.locationX = locationX;
+    }
+
+    public int getLocationX(){
+        return locationX;
+    }
     public Image getImage(){
         return trashImage;
+    }
+
+    public String getName(){
+        return name;
     }
 }

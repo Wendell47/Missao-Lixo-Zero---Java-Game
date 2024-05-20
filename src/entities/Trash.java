@@ -5,28 +5,34 @@ import java.awt.Image;
 public class Trash {
     
     Image trashImage;
+    int trashIndex;
     
-    public Trash(Image trashImage) {
+    String[] type = {"Vidro","Plastico","Papel","Organico","Metal","Eletronico"};
+    String trashType;
+    int lastIndex = type.length - 1;
 
+
+ 
+    public void setRandomTrash(){
+        trashIndex = new RandomNumber(0,lastIndex).getRandomNumber();
+        TypeOfTrash();
     }
+    private void TypeOfTrash() {
+        trashType = type[trashIndex];
 
-    public void TypeOfTrash(String type) {
-
-        switch (type) {
+        switch (type[trashIndex]) {
             case "vidro":
-                trashImage = new ImageAsset("./assets/lixo-amarelo.png").getImage();
-
+                System.out.println("Lixo:" + type[trashIndex]);
                 break;
-            case "plastico":
-                trashImage = new ImageAsset("./assets/lixo-amarelo.png").getImage();
+            case "Plastico":
+            System.out.println("Lixo:" + type[trashIndex]);
                 break;
-            case "papel":
-            trashImage = new ImageAsset("./assets/lixo-amarelo.png").getImage();
+            case "Papel":
+            System.out.println("Lixo:" + type[trashIndex]);
                 break;
-            case "organico":
-            trashImage = new ImageAsset("./assets/lixo-amarelo.png").getImage();
+            case "Organico":
+            System.out.println("Lixo:" + type[trashIndex]);
                 break;
-        
             default:
                 break;
         }
