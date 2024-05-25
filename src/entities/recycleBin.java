@@ -20,7 +20,7 @@ public class recycleBin {
 
         switch (type) {
             case "Plastico":
-                trashImage = new ImageAsset("../assets/lixo-laranja.png").getImage();
+                trashImage = new ImageAsset("../assets/lixo-Vermelho.png").getImage();
                 break;
             case "Metal":
                 trashImage = new ImageAsset("../assets/lixo-amarelo.png").getImage();
@@ -28,14 +28,8 @@ public class recycleBin {
             case "Vidro":
                 trashImage = new ImageAsset("../assets/lixo-verde.png").getImage();
                 break;
-            case "Eletronico":
-                trashImage = new ImageAsset("../assets/lixo-vermelho.png").getImage();
-                break;
-            case "Organico":
-                trashImage = new ImageAsset("../assets/lixo-vermelho.png").getImage();
-                break;
             case "Papel":
-                trashImage = new ImageAsset("../assets/lixo-vermelho.png").getImage();
+                trashImage = new ImageAsset("../assets/lixo-azul.png").getImage();
                 break;
         
             default:

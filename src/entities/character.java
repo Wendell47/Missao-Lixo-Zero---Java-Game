@@ -10,7 +10,6 @@ import java.util.Timer;
 import utils.screenSize;
 
 public class character {
-  
     private Image character_pose_1;
     private Image character_pose_2;
     screenSize screenSize;

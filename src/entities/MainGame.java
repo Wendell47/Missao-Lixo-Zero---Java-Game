@@ -17,7 +17,10 @@ Image cloud;
 Image sky;
 Image trash;
 Image timerForm;
-
+Image selectedTrashBg;
+Image gameEndScore;
+Image screenEndGame;
+Image StartGameScreen;
 
 int width;
 int height;
@@ -27,7 +30,15 @@ recycleBin selectBin;
 
 private int SelectedRecycleBinIndex = 0;
 
- int timing = 40;
+ int timing = 15;
+int restingTrash = 20;
+
+// pontuação e sequência de acertos
+int Score = 0;
+int combo = 0;
+int maxCombo = 0;
+boolean gameEnd = true;
+boolean gameStart = true;
 
 // variaveis do tempo
 Timer gameLoop;
@@ -37,9 +48,10 @@ Timer gameTime;
 
  //Imagens dos lixos
  recycleBin redTrash; 
- recycleBin OrangeTrash; 
+ recycleBin BlueTrash; 
  recycleBin YellowTrash; 
  recycleBin GreenTrash; 
+
 
  //assets
  Trash randomTrash = new Trash();
@@ -55,7 +67,18 @@ class cloud{
         this.image = image;
     }
 }
+
+String quebraLinha = System.getProperty("line.separator");
+
 character character = new character();
+setFont handleSelectedTrashText = new setFont(); 
+setFont timeText = new setFont(); 
+setFont selectedBinText = new setFont(); 
+setFont trashQuantity = new setFont(); 
+setFont gameScoreText = new setFont(); 
+setFont gameComboText = new setFont(); 
+
+setFont gameEndFont = new setFont();
 
 public MainGame(){
     
@@ -70,9 +93,13 @@ public MainGame(){
     cloud = new ImageAsset("../assets/cloud.png").getImage();
     sky = new ImageAsset("../assets/sky.png").getImage();
     timerForm = new ImageAsset("../assets/timer_form.png").getImage();
+    selectedTrashBg = new ImageAsset("../assets/selectedTrashBg.png").getImage();
+
+    screenEndGame = new ImageAsset("../assets/End_game_screen.png").getImage();
+    StartGameScreen = new ImageAsset("../assets/Start_game_screen.png").getImage();
     //tipos de lixos
-    redTrash = new recycleBin("Eletronico");
-    OrangeTrash = new recycleBin("Plastico");
+    redTrash = new recycleBin("Plastico");
+    BlueTrash = new recycleBin("Papel");
     YellowTrash = new recycleBin("Metal");
     GreenTrash = new recycleBin("Vidro");
     
@@ -80,7 +107,7 @@ public MainGame(){
      redTrash.setLocationX((width/2 )   - 600 - (redTrash.getImage().getWidth(null)/2));
      GreenTrash.setLocationX((width/2)  - 200 - (GreenTrash.getImage().getWidth(null)/2));
      YellowTrash.setLocationX((width/2) + 200 - (YellowTrash.getImage().getWidth(null)/2));
-     OrangeTrash.setLocationX((width/2) + 500 - (OrangeTrash.getImage().getWidth(null)/2));
+     BlueTrash.setLocationX((width/2) + 500 - (BlueTrash.getImage().getWidth(null)/2));
 
     
     arrow = new Arrow();
@@ -93,6 +120,9 @@ public MainGame(){
     backgroundImage = backgroundImage.getScaledInstance(width, height, Image.SCALE_SMOOTH);
 
     randomTrash.setRandomTrash();
+
+
+    
 
     cloudLoop = new Timer(25,new ActionListener() {
         @Override
@@ -150,15 +180,51 @@ private void CloudMoving(){
 
 public void  paintComponent(Graphics g){
     super.paintComponent(g);
-    Draw(g);
-    character.draw(g);
+
     
- 
+    handleSelectedTrashText.setText(randomTrash.trashName, 192,width/2 + 70,35);
+
+    timeText.setText(String.valueOf(timing), 60, 0 ,70);
+    selectedBinText.setText(selectBin.getName(), 500, 0 ,32);
+    trashQuantity.setText("restante: " + restingTrash, 240, 0 ,25);
+    
+    gameComboText.setTextCenter(false);
+    gameScoreText.setTextCenter(false);
+    trashQuantity.setColor("034400");
+    
+    
+    // Metodos de desenhar na tela
+    Draw(g);
+    
+    if(!gameEnd){
+        gameScoreText.setText("Pontos :" + Score, 50, 40, 60);
+        gameComboText.setText("Combo: " + combo, 100, 40, 50);
+
+        character.draw(g);
+        randomTrash.Draw(g);
+        handleSelectedTrashText.Draw(g);
+        timeText.Draw(g);
+        //selectedBinText.Draw(g);
+        trashQuantity.Draw(g);
+        gameComboText.Draw(g);
+        gameScoreText.Draw(g);
+      
+    }
+    else if(gameEnd && !gameStart){
+        
+        gameScoreText.setText(String.valueOf(Score), height/2 - 70, width/2+20, 120);
+        gameComboText.setText(String.valueOf(maxCombo), height/2 + 70, width/2+20, 120);
+        
+        gameComboText.Draw(g);
+        gameScoreText.Draw(g);
+    
+    }
+   
+    
+
+  
 }
 
-public void setGameTime(){
-    
-}
 
 
 private void  Draw(Graphics g){
@@ -167,40 +233,31 @@ private void  Draw(Graphics g){
     g.drawImage(cloud,cloudX, 0,cloud.getWidth(getFocusCycleRootAncestor()),cloud.getHeight(getFocusCycleRootAncestor()),null);
     g.drawImage(backgroundImage, 0, 0,width,height,null);
     
-    g.drawImage(redTrash.getImage(), redTrash.getLocationX(), recycleBinYPosition,redTrash.getImage().getWidth(getFocusCycleRootAncestor()),redTrash.getImage().getHeight(getFocusCycleRootAncestor()),null);
-    g.drawImage(GreenTrash.getImage(), GreenTrash.getLocationX(), recycleBinYPosition,GreenTrash.getImage().getWidth(getFocusCycleRootAncestor()),GreenTrash.getImage().getHeight(getFocusCycleRootAncestor()),null);
-    g.drawImage(YellowTrash.getImage(), YellowTrash.getLocationX(), recycleBinYPosition,YellowTrash.getImage().getWidth(getFocusCycleRootAncestor()),YellowTrash.getImage().getHeight(getFocusCycleRootAncestor()),null);
-    g.drawImage(OrangeTrash.getImage(), OrangeTrash.getLocationX(), recycleBinYPosition,OrangeTrash.getImage().getWidth(getFocusCycleRootAncestor()),OrangeTrash.getImage().getHeight(getFocusCycleRootAncestor()),null);
-
-    g.drawImage(arrow.getImage(), arrow.x, arrow.y, arrow.getImage().getWidth(getFocusCycleRootAncestor()),arrow.getImage().getHeight(getFocusCycleRootAncestor()),null);
-    
-    g.drawImage(timerForm, width/2 - (timerForm.getWidth(null)/2), -20, timerForm.getWidth(null),timerForm.getHeight(null),null);
-    Graphics2D g2d = (Graphics2D) g;
-     
-    g.setColor(Color.white);
-    Font fonte = new Font("Arial", Font.BOLD,70);
-    FontMetrics metrics = g.getFontMetrics(fonte);
-    int larguraTexto = metrics.stringWidth(randomTrash.trashType);
-    
-    int larguraTexto2 = metrics.stringWidth(selectBin.getName());
-    
-    int x = (getWidth() - larguraTexto) / 2;
-    int x2 = (getWidth() - larguraTexto2) / 2;
-
-
-    g2d.setFont(fonte);
-
-
-    g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-
-    g.drawString(String.valueOf(timing),  width/2 - 30,  60);
-
-    g.drawString(randomTrash.trashType, x, 200);
-    
-    g.drawString(selectBin.getName(),x2,300 );
-
    
+
     
+  if(gameStart){
+    g.drawImage(StartGameScreen, width/2 - StartGameScreen.getWidth(null)/2, height/2 - StartGameScreen.getHeight(null)/2, StartGameScreen.getWidth(null), StartGameScreen.getHeight(null),null);
+  }
+
+    if(!gameEnd){
+        g.drawImage(redTrash.getImage(), redTrash.getLocationX(), recycleBinYPosition,redTrash.getImage().getWidth(getFocusCycleRootAncestor()),redTrash.getImage().getHeight(getFocusCycleRootAncestor()),null);
+        g.drawImage(GreenTrash.getImage(), GreenTrash.getLocationX(), recycleBinYPosition,GreenTrash.getImage().getWidth(getFocusCycleRootAncestor()),GreenTrash.getImage().getHeight(getFocusCycleRootAncestor()),null);
+        g.drawImage(YellowTrash.getImage(), YellowTrash.getLocationX(), recycleBinYPosition,YellowTrash.getImage().getWidth(getFocusCycleRootAncestor()),YellowTrash.getImage().getHeight(getFocusCycleRootAncestor()),null);
+        g.drawImage(BlueTrash.getImage(), BlueTrash.getLocationX(), recycleBinYPosition,BlueTrash.getImage().getWidth(getFocusCycleRootAncestor()),BlueTrash.getImage().getHeight(getFocusCycleRootAncestor()),null);
+
+        
+        g.drawImage(timerForm, width/2 - (timerForm.getWidth(null)/2), -20, timerForm.getWidth(null),timerForm.getHeight(null),null);
+        g.drawImage(selectedTrashBg, width/2 - (selectedTrashBg.getWidth(null)/2), 90, selectedTrashBg.getWidth(null),selectedTrashBg.getHeight(null),null);
+
+        g.drawImage(arrow.getImage(), arrow.x, arrow.y, arrow.getImage().getWidth(getFocusCycleRootAncestor()),arrow.getImage().getHeight(getFocusCycleRootAncestor()),null);
+    }
+
+    
+
+    if (gameEnd && !gameStart){
+        g.drawImage(screenEndGame, width/2 - screenEndGame.getWidth(null)/2, height/2 - screenEndGame.getHeight(null)/2, screenEndGame.getWidth(null), screenEndGame.getHeight(null), getFocusCycleRootAncestor());
+    }
 }
 
 
@@ -226,8 +283,8 @@ public void handleSelectedRecycleBin(){
             break;
     
         case 3:
-        selectBin = OrangeTrash;
-            arrow.setLocationX(OrangeTrash.getLocationX()+50);
+        selectBin = BlueTrash;
+            arrow.setLocationX(BlueTrash.getLocationX()+50);
             break;
         default:
             break;
@@ -239,12 +296,19 @@ public void handleSelectedRecycleBin(){
 public void actionPerformed(ActionEvent e) {
     cloudLoop.start();
 
+    if(timing <= 0 || restingTrash == 0){
+        gameEnd = true;
+        
+    }
     repaint();
+
+
+   
 }
 
 @Override
 public void keyPressed(KeyEvent e){
-   
+
     if (e.getKeyCode() == KeyEvent.VK_LEFT){
         
         if(SelectedRecycleBinIndex == 3){SelectedRecycleBinIndex = 0;} 
@@ -267,15 +331,46 @@ public void keyPressed(KeyEvent e){
         characterPoseChange.start();
 
         if(randomTrash.trashType == selectBin.name){
-            timing +=3;
+            timing +=1;
+            restingTrash -= 1;
+            combo +=1;
+
+            if (combo >= 10){
+                Score += 10;
+            }
+            else if (combo >= 20){
+                Score += 20;
+            }
+            else{
+                Score += 2;
+            }
         }
         else{
-            timing -=1;
+            timing -=2;
+            combo = 0;
         }
+
+        if(maxCombo < combo || maxCombo == 0){
+            maxCombo = combo;
+        }
+        
         randomTrash.setRandomTrash();
 
     }
     
+    if(gameEnd){
+        Score = 0;
+        maxCombo = 0;
+        combo = 0;
+        gameEnd = false;
+
+        timing = 15;
+        restingTrash= 20;
+        
+        gameStart = false;
+
+        gameLoop.start();
+    }
     handleSelectedRecycleBin();
 
 }
